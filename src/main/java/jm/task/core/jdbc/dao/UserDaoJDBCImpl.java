@@ -95,9 +95,8 @@ public class UserDaoJDBCImpl implements UserDao {
 
 
     public List<User> getAllUsers() {
-        try (Connection connect = Util.getConnection()) {
-            try (Statement statement = connect.createStatement()) {
-                connect.setAutoCommit(false);
+            try (Connection connect = Util.getConnection();
+                 Statement statement = connect.createStatement()) {
 
                 List<User> list = new ArrayList<>();
                 ResultSet resultSet = statement.executeQuery("SELECT * FROM user");
@@ -111,14 +110,8 @@ public class UserDaoJDBCImpl implements UserDao {
                     list.add(user);
                 }
 
-                connect.commit();
-
                 return list;
-            } catch (SQLException e) {
-                connect.rollback();
-                connect.setAutoCommit(true);
-                throw new RuntimeException(e);
-            }
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
